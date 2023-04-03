@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 // ------------------------auth------------------------
 
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login'])->middleware('cors');
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
