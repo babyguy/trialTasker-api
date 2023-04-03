@@ -34,4 +34,14 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
     }
+
+    public function cases()
+    {
+        return $this->hasMany(Caso::class);
+    }
+
+    public function stages()
+    {
+        return $this->hasMany(Stage::class);
+    }
 };

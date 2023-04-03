@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-    // ------------------------auth------------------------
+// ------------------------auth------------------------
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -32,3 +32,127 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::post('allusers', [AuthController::class, 'allusers']);
+
+
+// ------------------------dashboard----------------------------
+Route::group([
+    'prefix' => 'dashboard',
+    'controller' => DashboardController::class,
+    'middleware' => ['auth:sanctum',]
+], function () {
+    Route::get('/users-week', 'getUsersForWeek');
+    Route::get('/sessions', 'getSessions');
+});
+
+
+//----------------------------typePerson----------------------------
+Route::group([
+    'prefix' => 'type-persons',
+    'controller' => TypePersonController::class,
+    'middleware' => ['auth:sanctum', 'verified', 'authCookie']
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+//----------------------------users----------------------------
+route::group([
+    'prefix' => 'users',
+    'controller' => UserController::class,
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+//----------------------------person----------------------------
+route::group([
+    'prefix' => 'persons',
+    'controller' => PersonController::class,
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+//----------------------------caso----------------------------
+route::group([
+    'prefix' => 'cases',
+    'controller' => CasoController::class,
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+//----------------------------type_stage----------------------------
+route::group([
+    'prefix' => 'typeStages',
+    'controller' => TypeStageController::class,
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+
+//----------------------------stages----------------------------
+route::group([
+    'prefix' => 'stages',
+    'controller' => StageController::class,
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+//----------------------------personStage----------------------------
+route::group([
+    'prefix' => 'personStages',
+    'controller' => PersonStageController::class,
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+//----------------------------files----------------------------
+route::group([
+    'prefix' => 'files',
+    'controller' => FileController::class,
+], function () {
+    Route::get('/', 'index');
+    Route::get('/all', 'all');
+    Route::post('/', 'store');
+    Route::get('/{id}', 'show');
+    Route::put('/{id}', 'update');
+    Route::delete('/{id}', 'destroy');
+});
+
+
+// ----------------------------casesUser----------------------------
+Route::get('/casesActive', [CasoController::class, 'casesActive']);
+Route::get('/casesInactive', [CasoController::class, 'casesInactive']);
+Route::get('/infoCase/{id}', [StageController::class, 'infoCase']);
