@@ -53,7 +53,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('token')->plainTextToken;
-            $cookie = cookie('cookie_token', $token, 60 * 24);
+            $cookie = cookie('auth_token', $token, 60 * 24);
             return response([
                 'token' => $token,
                 'is_admin' => $user->is_admin,
@@ -80,7 +80,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::user()->currentAccessToken()->delete(); 
-        $cookie = Cookie::forget('cookie_token');
+        $cookie = Cookie::forget('auth_token');
         return response()->json([
             'message' => 'Sesion finalizada',
         ], Response::HTTP_OK)->withoutCookie($cookie);
