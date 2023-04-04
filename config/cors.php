@@ -17,17 +17,34 @@ return [
 
     'paths' => ['*'],
 
-    'allowed_methods' => ['*'],
+    'allowed_methods' => [
+        'POST',
+        'GET',
+        'OPTIONS',
+        'PUT',
+        'PATCH',
+        'DELETE'
+    ],
 
     'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => ['*'],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => [   'Content-Type',
+    'X-Auth-Token',
+    'Origin',
+    'Authorization',
+    'Set-Cookie'],
 
-    'exposed_headers' => ['*'],
+    'exposed_headers' => [   'Cache-Control',
+    'Content-Language',
+    'Content-Type',
+    'Expires',
+    'Last-Modified',
+    'Pragma',
+    'Set-Cookie'],
 
-    'max_age' => 0,
+    'max_age' => 1 * 60 * 24,
 
     'supports_credentials' => true,
 
