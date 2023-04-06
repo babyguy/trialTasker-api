@@ -45,7 +45,7 @@ class AuthController extends Controller
             ], Response::HTTP_OK);
             
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(["errors" => $e->errors()], Response::HTTP_NOT_FOUND);
+            return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
