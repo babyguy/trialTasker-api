@@ -37,7 +37,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            Mail::to($request->email)->send(new Correo());
+           
             return response()->json([
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
@@ -103,5 +103,15 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'metodo allusers ok'
         ]);
+    }
+
+    // ------------------------verify email------------------------
+
+    public function verifyemail(Request $request):JsonResponse
+    {
+        Mail::to($request->email)->send(new Correo());
+        return response()->json([
+            'message' => 'correo de verificacion eviado'
+        ],Response::HTTP_OK);
     }
 }
