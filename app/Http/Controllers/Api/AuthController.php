@@ -39,7 +39,7 @@ class AuthController extends Controller
             ]);
 
             return response()->json([
-                Mail::to($request->email)->send(new Correo()),
+                // Mail::to($request->email)->send(new Correo()),
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
             
