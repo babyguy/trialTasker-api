@@ -38,8 +38,12 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
             $correo = new Correo();
-            Mail::to($request->email)->send($correo);        
-            return response()->json(['message' => 'Registro exitoso'], Response::HTTP_OK);
+                 
+            return response()->json([
+                Mail::to($request->email)->send($correo),
+                'message' => 'Registro exitoso',
+            ], Response::HTTP_OK);
+            
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(["errors" => $e->errors()], Response::HTTP_NOT_FOUND);
         }
