@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Correo;
 
 class AuthController extends Controller
 {
@@ -35,6 +37,8 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
+            $correo = new Correo();
+            Mail::to($request->email)->send($correo);        
             return response()->json(['message' => 'Registro exitoso'], Response::HTTP_OK);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(["errors" => $e->errors()], Response::HTTP_NOT_FOUND);
