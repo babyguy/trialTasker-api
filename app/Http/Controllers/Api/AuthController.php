@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Correo;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
 
@@ -25,7 +25,7 @@ class AuthController extends Controller
                 'lastname' => ['required', 'string'],
                 'phone' => ['required', 'string'],
                 'address' => ['required', 'string'],
-                'email' => ['required', 'string', 'email', 'unique:users'],
+                'email' => ['required', 'string', 'email', 'unique:'.User::class],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
 
@@ -44,7 +44,7 @@ class AuthController extends Controller
             ], Response::HTTP_OK);
             
         } 
-        catch (\Illuminate\Validation\ValidationException $e) {
+        catch (ValidationException $e) {
             return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
