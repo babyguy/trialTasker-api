@@ -19,16 +19,15 @@ class AuthController extends Controller
     // ------------------------register------------------------
     public function register(Request  $request)
     {
-        try {
-            $request->validate([
-                'name' => ['required', 'string'],
-                'lastname' => ['required', 'string'],
-                'phone' => ['required', 'string'],
-                'address' => ['required', 'string'],
+        $request->validate([
+            'name' => ['required', 'string'],
+            'lastname' => ['required', 'string'],
+            'phone' => ['required', 'string'],
+            'address' => ['required', 'string'],
                 'email' => ['required', 'string', 'email', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
-
+            
             $user = User::create([
                 'name' => $request->name,
                 'lastname' => $request->lastname,
@@ -37,16 +36,21 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
+
             $correo = new Correo();
-                 
-            return response()->json([
-                Mail::to($request->email)->send($correo),
-                'message' => 'Registro exitoso',
-            ], Response::HTTP_OK);
+            Mail::to($request->email)->send($correo);
             
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+            return response()->json([
+                    'message' => 'Registro exitoso',
+                    ]);
+        //     try {
+        //     return response()->json([
+        //             'message' => 'Registro exitoso',
+        //         ], Response::HTTP_OK);
+            
+        // } catch (\Illuminate\Validation\ValidationException $e) {
+        //     return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        // }
     }
 
     // ------------------------login------------------------
