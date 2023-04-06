@@ -12,20 +12,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Correo;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use illuminate\Validation\ValidationException;
+
 class AuthController extends Controller
 {
 
     // ------------------------register------------------------
     public function register(Request  $request):JsonResponse
     {
-      
+        try {
             $request->validate([
                 'name' => ['required', 'string'],
                 'lastname' => ['required', 'string'],
                 'phone' => ['required', 'string'],
                 'address' => ['required', 'string'],
-                'email' => ['required', 'string', 'email,'.auth()->user()->id,],
+                'email' => ['required', 'string', 'email', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
 
@@ -38,12 +38,14 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            Mail::to($user->email)->send(new Correo());
             return response()->json([
+                Mail::to($request->email)->send(new Correo()),
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
             
-        
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENT);
+        }
     }
 
     // ------------------------login------------------------
