@@ -8,26 +8,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Correo;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AuthController extends Controller
 {
 
     // ------------------------register------------------------
-    public function register(Request  $request)
+    public function register(Request  $request):JsonResponse
     {
-        $request->validate([
-            'name' => ['required', 'string'],
-            'lastname' => ['required', 'string'],
-            'phone' => ['required', 'string'],
-            'address' => ['required', 'string'],
+        try {
+            $request->validate([
+                'name' => ['required', 'string'],
+                'lastname' => ['required', 'string'],
+                'phone' => ['required', 'string'],
+                'address' => ['required', 'string'],
                 'email' => ['required', 'string', 'email', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
-            
+
             $user = User::create([
                 'name' => $request->name,
                 'lastname' => $request->lastname,
@@ -37,20 +38,14 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            $correo = new Correo();
-            Mail::to($request->email)->send($correo);
-            
             return response()->json([
-                    'message' => 'Registro exitoso',
-                    ]);
-        //     try {
-        //     return response()->json([
-        //             'message' => 'Registro exitoso',
-        //         ], Response::HTTP_OK);
+                Mail::to($request->email)->send(new Correo()),
+                'message' => 'Registro exitoso',
+            ], Response::HTTP_OK);
             
-        // } catch (\Illuminate\Validation\ValidationException $e) {
-        //     return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
-        // }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     // ------------------------login------------------------
