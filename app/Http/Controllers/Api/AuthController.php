@@ -25,7 +25,7 @@ class AuthController extends Controller
                 'lastname' => ['required', 'string'],
                 'phone' => ['required', 'string'],
                 'address' => ['required', 'string'],
-                'email' => ['required', 'string', 'email'.auth()->user()->id,],
+                'email' => ['required', 'string', 'email,'.auth()->user()->id,],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
 
