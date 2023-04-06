@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\Correo;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -25,7 +24,7 @@ class AuthController extends Controller
                 'lastname' => ['required', 'string'],
                 'phone' => ['required', 'string'],
                 'address' => ['required', 'string'],
-                'email' => ['required', 'string', 'email', 'unique:users'],
+                'email' => ['required', 'string', 'email', 'unique:users,email'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
 
@@ -38,13 +37,16 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
+            Mail::to($request->email)->send(new Correo());
             return response()->json([
-                // Mail::to($request->email)->send(new Correo()),
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
             
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENT);
+            return response()->json([
+                'message' => 'Registro fallido',
+                "errors" => $e->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENT);
         }
     }
 
