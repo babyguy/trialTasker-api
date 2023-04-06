@@ -19,13 +19,13 @@ class AuthController extends Controller
     // ------------------------register------------------------
     public function register(Request  $request):JsonResponse
     {
-        try {
+      
             $request->validate([
                 'name' => ['required', 'string'],
                 'lastname' => ['required', 'string'],
                 'phone' => ['required', 'string'],
                 'address' => ['required', 'string'],
-                'email' => ['required', 'string', 'email', 'unique:'.User::class],
+                'email' => ['required', 'string', 'email', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
 
@@ -43,10 +43,7 @@ class AuthController extends Controller
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
             
-        } 
-        catch (ValidationException $e) {
-            return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        
     }
 
     // ------------------------login------------------------
