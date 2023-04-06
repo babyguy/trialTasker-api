@@ -38,10 +38,10 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            return response()->json([
-                Mail::to($request->email)->send(new Correo()),
-                'message' => 'Registro exitoso',
-            ], Response::HTTP_OK);
+            Mail::to($request->email)->send(new Correo());
+            // return response()->json([
+            //     'message' => 'Registro exitoso',
+            // ], Response::HTTP_OK);
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(["errors" => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
