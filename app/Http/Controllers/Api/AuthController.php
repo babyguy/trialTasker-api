@@ -46,7 +46,7 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Registro fallido',
                 "errors" => $e->errors(),
-            ], Response::HTTP_UNPROCESSABLE_ENT);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
