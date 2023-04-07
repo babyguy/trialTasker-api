@@ -3,6 +3,14 @@
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TypePersonController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PersonController;
+use App\Http\Controllers\CasoController;
+use App\Http\Controllers\TypeStageController;
+use App\Http\Controllers\StageController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +34,13 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('user-profile', [AuthController::class, 'userprofile']);
+    Route::get('user-profile', [AuthController::class, 'userprofile']);
     Route::post('verify-email', [AuthController::class, 'verifyemail']);
+    
+    Route::get('/casesActive', [CasoController::class, 'casesActive']);
+    Route::get('/casesInactive', [CasoController::class, 'casesInactive']);
+    Route::get('/infoCase/{id}', [StageController::class, 'infoCase']);
+    
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
@@ -160,6 +173,4 @@ route::group([
 
 
 // ----------------------------casesUser----------------------------
-Route::get('/casesActive', [CasoController::class, 'casesActive']);
-Route::get('/casesInactive', [CasoController::class, 'casesInactive']);
-Route::get('/infoCase/{id}', [StageController::class, 'infoCase']);
+
