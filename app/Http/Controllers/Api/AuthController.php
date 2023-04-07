@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Correo;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -19,6 +20,7 @@ class AuthController extends Controller
     // ------------------------register------------------------
     public function register(Request  $request):JsonResponse
     {
+        // $request->confirmation_code =  Str::random(24);
         try {
             $request->validate([
                 'name' => ['required', 'string'],
@@ -27,7 +29,10 @@ class AuthController extends Controller
                 'address' => ['required', 'string'],
                 'email' => ['required', 'string', 'email', 'unique:users,email'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
+                'confirmation_code' => ['nullable'],
             ]);
+
+            
 
             $user = User::create([
                 'name' => $request->name,
@@ -36,9 +41,19 @@ class AuthController extends Controller
                 'address' => $request->address,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'confirmation_code' =>  $request->confirmation_code,
             ]);
             
+            $data = $request->all();
+            
+            Mail::send('correo', $data, function ($messsge) use ($data){
+                $messsge->to( $data['email'],  $data['name'],)->subject('confirma tu correo');
+            });
+
+
             return response()->json([
+                'name-->' =>  $data['name'],
+                'confirmation_code-->' =>  $data['confirmation_code'],
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
             
@@ -109,9 +124,24 @@ class AuthController extends Controller
     public function verifyemail()
     {
         $user = Auth::user(); 
-        Mail::to($user->email)->send(new Correo());
+        // Mail::to($user->email)->send(new Correo());
+        $data =  (array) $user;
+        Mail::send('correo', $data, function ($messsge) use ($data){
+            $messsge->to($data->email, $data->name,)->subject('confirma tu correo');
+        });
+
         return response()->json([
             'message' => 'correo de verificacion eviado'
         ],Response::HTTP_OK);
+    }
+
+    // ------------------------verify user------------------------
+    public function verifyuser($code){
+        $user = User::where('confirmation_code',$code)->first();
+        if(! $user){
+            return response()->json(['message' => 'usuario no encontrado'],Response::HTTP_UNAUTHORIZED);
+        }
+        $user->confirmed = true;
+        $user->save();
     }
 }

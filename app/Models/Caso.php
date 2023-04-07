@@ -18,6 +18,7 @@ class Caso extends Model
         'case_status',
         'case_user_id',
         'case_person_id',
+        'confirmation_code'
     ];
 
     public function stages()

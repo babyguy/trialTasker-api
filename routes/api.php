@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
+Route::get('register/verifty/{code}', [AuthController::class, 'verifyuser']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('user-profile', [AuthController::class, 'userprofile']);
     Route::post('verify-email', [AuthController::class, 'verifyemail']);

@@ -21,6 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'address',
         'email',
         'password',
+        'confirmed',
+        'confirmation_code',
     ];
 
     protected $hidden = [
@@ -31,13 +33,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    // public function cases()
-    // {
-    //     return $this->hasMany(Caso::class);
-    // }
+    public function cases()
+    {
+        return $this->hasMany(Caso::class);
+    }
 
-    // public function stages()
-    // {
-    //     return $this->hasMany(Stage::class);
-    // }
+    public function stages()
+    {
+        return $this->hasMany(Stage::class);
+    }
 }
