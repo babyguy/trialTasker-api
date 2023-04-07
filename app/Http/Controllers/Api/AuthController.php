@@ -20,7 +20,7 @@ class AuthController extends Controller
     // ------------------------register------------------------
     public function register(Request  $request):JsonResponse
     {
-        // $request->confirmation_code =  Str::random(24);
+        $request->confirmation_code =  Str::random(24);
         try {
             $request->validate([
                 'name' => ['required', 'string'],
@@ -41,19 +41,21 @@ class AuthController extends Controller
                 'address' => $request->address,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'confirmation_code' =>  $request->confirmation_code,
+                'confirmation_code' => $request->confirmation_code,
             ]);
             
-            $data = $request->all();
-            
+            $data = [
+                'email'=>$user->email,
+                'name' =>$user->name, 
+                'confirmation_code'=> $user->confirmation_code
+            ];
+
             Mail::send('correo', $data, function ($messsge) use ($data){
-                $messsge->to( $data['email'],  $data['name'],)->subject('confirma tu correo');
+                $messsge->to($data['email'], $data['name'],)->subject('confirma tu correo');
             });
 
 
             return response()->json([
-                'name-->' =>  $data['name'],
-                'confirmation_code-->' =>  $data['confirmation_code'],
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
             
@@ -124,10 +126,15 @@ class AuthController extends Controller
     public function verifyemail()
     {
         $user = Auth::user(); 
-        // Mail::to($user->email)->send(new Correo());
-        $data =  (array) $user;
+
+        $data = [
+            'email'=>$user->email,
+            'name' =>$user->name, 
+            'confirmation_code'=> $user->confirmation_code
+        ];
+
         Mail::send('correo', $data, function ($messsge) use ($data){
-            $messsge->to($data->email, $data->name,)->subject('confirma tu correo');
+            $messsge->to($data['email'], $data['name'],)->subject('confirma tu correo');
         });
 
         return response()->json([
@@ -142,6 +149,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'usuario no encontrado'],Response::HTTP_UNAUTHORIZED);
         }
         $user->confirmed = true;
+        $user->email_verified_at = datetime();
         $user->save();
     }
 }
