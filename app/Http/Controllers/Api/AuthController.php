@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Mail;
 use App\Mail\Correo;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -36,8 +37,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-
-           
+            
             return response()->json([
                 'message' => 'Registro exitoso',
             ], Response::HTTP_OK);
@@ -55,7 +55,7 @@ class AuthController extends Controller
     public function login(Request  $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'string'],
+            'email' => ['required', 'string','email'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 
@@ -70,7 +70,6 @@ class AuthController extends Controller
         } else {
             return response()->json(["message" => 'Credenciales ninvalidas'], Response::HTTP_UNAUTHORIZED);
         }
-
     }
 
     // ------------------------userProfile------------------------
@@ -107,9 +106,10 @@ class AuthController extends Controller
 
     // ------------------------verify email------------------------
 
-    public function verifyemail(Request $request):JsonResponse
+    public function verifyemail():JsonResponse
     {
-        Mail::to($request->email)->send(new Correo());
+        $user = Auth::user(); 
+        Mail::to($user->email)->send(new Correo());
         return response()->json([
             'message' => 'correo de verificacion eviado'
         ],Response::HTTP_OK);
