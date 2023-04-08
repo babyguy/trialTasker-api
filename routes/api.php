@@ -10,6 +10,7 @@ use App\Http\Controllers\PersonController;
 use App\Http\Controllers\CasoController;
 use App\Http\Controllers\TypeStageController;
 use App\Http\Controllers\StageController;
+use App\Http\Controllers\PersonStageController;
 
 
 /*
