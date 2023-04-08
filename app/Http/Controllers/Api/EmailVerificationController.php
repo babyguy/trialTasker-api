@@ -16,7 +16,7 @@ class EmailVerificationController extends Controller
         $user = User::findOrFail($request->id);
         if ($request->hasValidSignature() && $user->email_verified_at === null) {
             $user->markEmailAsVerified();
-            return response()->json(['message' => 'Email verified.'], 200);
+            return Redirect::to('https://trial-tasker.vercel.app/login');
         }
 
         $now = new \DateTime();
