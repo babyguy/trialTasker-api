@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\EmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -11,7 +12,6 @@ use App\Http\Controllers\CasoController;
 use App\Http\Controllers\TypeStageController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\PersonStageController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +34,16 @@ use App\Http\Controllers\PersonStageController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::get('register/verifty/{code}', [AuthController::class, 'verifyuser']);
+
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->name('verification.verify')
+    ->middleware(['signed', 'throttle:6,1']);
+
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+    ->middleware(['auth:sanctum', 'throttle:6,1'])
+    ->name('verification.send');
+
+// Route::get('register/verifty/{code}', [AuthController::class, 'verifyuser']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('user-profile', [AuthController::class, 'userprofile']);

@@ -20,7 +20,7 @@ class AuthController extends Controller
     // ------------------------register------------------------
     public function register(Request  $request):JsonResponse
     {
-        $request->confirmation_code =  Str::random(24);
+        // $request->confirmation_code =  Str::random(24);
         try {
             $request->validate([
                 'name' => ['required', 'string'],
@@ -44,16 +44,17 @@ class AuthController extends Controller
                 'confirmation_code' => $request->confirmation_code,
             ]);
             
-            $data = [
-                'email'=>$user->email,
-                'name' =>$user->name, 
-                'confirmation_code'=> $user->confirmation_code
-            ];
+            // $data = [
+            //     'email'=>$user->email,
+            //     'name' =>$user->name, 
+            //     'confirmation_code'=> $user->confirmation_code
+            // ];
 
-            Mail::send('correo', $data, function ($messsge) use ($data){
-                $messsge->to($data['email'], $data['name'],)->subject('confirma tu correo');
-            });
+            // Mail::send('correo', $data, function ($messsge) use ($data){
+            //     $messsge->to($data['email'], $data['name'],)->subject('confirma tu correo');
+            // });
 
+            $user->sendEmailVerificationNotification();
 
             return response()->json([
                 'message' => 'Registro exitoso',
@@ -127,15 +128,16 @@ class AuthController extends Controller
     {
         $user = Auth::user(); 
 
-        $data = [
-            'email'=>$user->email,
-            'name' =>$user->name, 
-            'confirmation_code'=> $user->confirmation_code
-        ];
+        // $data = [
+        //     'email'=>$user->email,
+        //     'name' =>$user->name, 
+        //     'confirmation_code'=> $user->confirmation_code
+        // ];
 
-        Mail::send('correo', $data, function ($messsge) use ($data){
-            $messsge->to($data['email'], $data['name'],)->subject('confirma tu correo');
-        });
+        // Mail::send('correo', $data, function ($messsge) use ($data){
+        //     $messsge->to($data['email'], $data['name'],)->subject('confirma tu correo');
+        // });
+        $user->sendEmailVerificationNotification();
 
         return response()->json([
             'message' => 'correo de verificacion eviado'
@@ -143,13 +145,13 @@ class AuthController extends Controller
     }
 
     // ------------------------verify user------------------------
-    public function verifyuser($code){
-        $user = User::where('confirmation_code',$code)->first();
-        if(! $user){
-            return response()->json(['message' => 'usuario no encontrado'],Response::HTTP_UNAUTHORIZED);
-        }
-        $user->confirmed = true;
-        $user->email_verified_at = datetime();
-        $user->save();
-    }
+    // public function verifyuser($code){
+    //     $user = User::where('confirmation_code',$code)->first();
+    //     if(! $user){
+    //         return response()->json(['message' => 'usuario no encontrado'],Response::HTTP_UNAUTHORIZED);
+    //     }
+    //     $user->confirmed = true;
+    //     $user->email_verified_at = datetime();
+    //     $user->save();
+    // }
 }
