@@ -16,14 +16,14 @@ class EmailVerificationController extends Controller
         $user = User::findOrFail($request->id);
         if ($request->hasValidSignature() && $user->email_verified_at === null) {
             $user->markEmailAsVerified();
-            return Redirect::to('https://trial-tasker.vercel.app/login');
+            return Redirect::to('https://www.trialtasker.live/login');
         }
 
         $now = new \DateTime();
         $user->email_verified_at = $now->format('d-m-Y H:i:s');
         //url de login de la app
         // return Redirect::to('http://localhost:3000/login');
-        return Redirect::to('https://trial-tasker.vercel.app/login');
+        return Redirect::to('https://www.trialtasker.live/login');
     }
 
     public function resend(Request $request)
